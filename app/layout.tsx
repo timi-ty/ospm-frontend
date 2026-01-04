@@ -16,7 +16,7 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: "OSPM",
-  description: "Open source prediction market. Will OSPM hit 1M trades?",
+  description: "Open Source Prediction Market. Will OSPM hit 1M trades?",
   keywords: ["prediction market", "LMSR", "trading", "crypto", "OSPM", "open source"],
   icons: {
     icon: "/logo.png",

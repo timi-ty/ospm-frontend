@@ -20,8 +20,7 @@ async function main() {
   // Create the single OSPM market
   const market = await prisma.market.create({
     data: {
-      question:
-        "Will Open Source Prediction Market (OSPM) hit 1M trades, scaring establishment prediction marketplaces?",
+      question: "Will OSPM hit 1M trades?",
       b: 100, // LMSR liquidity parameter - higher = more liquidity, smoother prices
       qYes: 0,
       qNo: 0,

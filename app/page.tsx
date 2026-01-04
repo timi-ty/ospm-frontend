@@ -166,9 +166,9 @@ export default function Home() {
         {/* Manifesto */}
         <div className="card mb-10 md:mb-14 border-l-4 border-l-[var(--accent)]">
           <div className="max-w-3xl">
-            <h2 className="text-sm font-semibold uppercase tracking-wider text-[var(--accent)] mb-4">Our Philosophy</h2>
+            <h2 className="text-sm font-semibold uppercase tracking-wider text-[var(--accent)] mb-4">Why does this exist?</h2>
             <p className="text-muted leading-relaxed mb-4">
-              We believe prediction markets will have a{" "}
+              Prediction markets will have a{" "}
               <span className="text-foreground font-medium">profound feedback effect on decision making</span>{" "}
               — similar to how the stock market influences public companies.
             </p>
