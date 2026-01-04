@@ -13,6 +13,7 @@ export async function GET() {
           contains: "OSPM",
         },
       },
+      orderBy: { createdAt: "asc" },
     });
 
     if (!market) {

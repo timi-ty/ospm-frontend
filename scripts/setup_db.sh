@@ -141,19 +141,13 @@ echo "📄 Setting up environment..."
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
-ENV_FILE="$PROJECT_DIR/.env.local"
+ENV_FILE="$PROJECT_DIR/.env"
 
 DATABASE_URL="postgresql://$DB_USER:$DB_PASS@$DB_HOST:$DB_PORT/$DB_NAME?schema=public"
 
-# Write to .env.local (Next.js uses this for local dev)
+# Write to .env (Prisma reads this by default)
 echo "DATABASE_URL=\"$DATABASE_URL\"" > "$ENV_FILE"
-echo "   ✅ Created .env.local"
-
-# Remove .env if it exists (redundant with .env.local)
-if [ -f "$PROJECT_DIR/.env" ]; then
-    rm "$PROJECT_DIR/.env"
-    echo "   🗑️  Removed redundant .env file"
-fi
+echo "   ✅ Created .env"
 
 # -----------------------------------------------------------------------------
 # Step 7: Push Prisma schema and seed database
@@ -162,7 +156,7 @@ echo ""
 echo "🔄 Pushing Prisma schema..."
 cd "$PROJECT_DIR"
 
-# Export DATABASE_URL for Prisma CLI (it doesn't read .env.local)
+# Export DATABASE_URL for Prisma CLI
 export DATABASE_URL="$DATABASE_URL"
 
 npx prisma db push --skip-generate

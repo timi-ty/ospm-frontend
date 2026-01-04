@@ -3,6 +3,8 @@ import { cookies } from "next/headers";
 import prisma from "@/lib/prisma";
 import { prices, simulateBuy } from "@/lib/lmsr";
 
+export const dynamic = "force-dynamic";
+
 const COOKIE_NAME = "ospm_traded";
 const VISITOR_COOKIE = "ospm_visitor_id";
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 365; // 1 year in seconds
@@ -47,6 +49,7 @@ export async function POST(request: NextRequest) {
           contains: "OSPM",
         },
       },
+      orderBy: { createdAt: "asc" },
     });
 
     if (!market) {

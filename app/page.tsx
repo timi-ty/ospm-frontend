@@ -40,7 +40,7 @@ interface TradeStatus {
   trade: Trade | null;
 }
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
+const fetcher = (url: string) => fetch(url, { cache: 'no-store' }).then((res) => res.json());
 
 export default function Home() {
   const [isTrading, setIsTrading] = useState(false);
