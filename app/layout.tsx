@@ -18,6 +18,13 @@ export const metadata: Metadata = {
   title: "OSPM",
   description: "Open source prediction market. Will OSPM hit 1M trades?",
   keywords: ["prediction market", "LMSR", "trading", "crypto", "OSPM", "open source"],
+  icons: {
+    icon: "/logo.png",
+    apple: "/logo.png",
+  },
+  openGraph: {
+    images: ["/logo.png"],
+  },
 };
 
 export default function RootLayout({

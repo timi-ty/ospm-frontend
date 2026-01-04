@@ -150,8 +150,9 @@ export default function Home() {
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <header className="text-center mb-10 md:mb-14">
-          <h1 className="text-4xl md:text-5xl font-bold mb-3">
-            OSPM
+          <h1 className="inline-flex flex-col items-center justify-center border-[3px] border-current w-[4.5rem] h-[4.5rem] md:w-[5.5rem] md:h-[5.5rem] overflow-hidden mb-3">
+            <span className="text-[2.2rem] md:text-[2.7rem] font-black leading-[0.8] tracking-[-0.08em]">OS</span>
+            <span className="text-[2.2rem] md:text-[2.7rem] font-black leading-[0.8] tracking-[-0.08em]">PM</span>
           </h1>
           <p className="text-muted text-base md:text-lg max-w-xl mx-auto">
             An open-source prediction market experiment
