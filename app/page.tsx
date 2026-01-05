@@ -147,53 +147,49 @@ export default function Home() {
   const userTrade = tradeStatus?.trade ?? null;
 
   return (
-    <main className="min-h-screen p-4 md:p-8">
-      <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <header className="text-center mb-10 md:mb-14">
-          <h1 className="mb-3">
+    <main className="min-h-screen">
+      {/* Top Navigation */}
+      <nav className="sticky top-0 z-50 backdrop-blur-xl bg-[var(--background)]/80 border-b border-[var(--border-color)]">
+        <div className="max-w-6xl mx-auto px-4 md:px-8 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-3">
             <Image
               src="/logo.png"
               alt="OSPM"
-              width={100}
-              height={100}
-              className="mx-auto rounded-lg"
+              width={40}
+              height={40}
+              className="rounded-md"
               priority
             />
-          </h1>
-          <p className="text-muted text-base md:text-lg max-w-xl mx-auto">
-            An open-source prediction market experiment
-          </p>
-          <div className="flex items-center justify-center gap-2 mt-5">
-            <span className="inline-block w-2 h-2 rounded-full bg-[var(--yes-color)] animate-pulse" />
-            <span className="text-sm text-muted">Live · Updates every 2s</span>
+            <span className="font-bold tracking-tight text-lg hidden sm:block">OSPM</span>
           </div>
-        </header>
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--foreground)]/5 border border-[var(--foreground)]/10">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--yes-color)] opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-[var(--yes-color)]"></span>
+            </span>
+            <span className="text-xs font-medium text-muted uppercase tracking-wider">Live Market</span>
+          </div>
+        </div>
+      </nav>
 
-        {/* Manifesto */}
-        <div className="card mb-10 md:mb-14 border-l-4 border-l-[var(--accent)]">
-          <div className="max-w-3xl">
-            <h2 className="text-sm font-semibold uppercase tracking-wider text-[var(--accent)] mb-4">Why does this exist?</h2>
-            <p className="text-muted leading-relaxed mb-4">
-              Prediction markets will have a{" "}
-              <span className="text-foreground font-medium">profound feedback effect on decision making</span>{" "}
-              — similar to how the stock market influences public companies.
-            </p>
-            <p className="text-muted leading-relaxed mb-4">
-              For this reason, leading prediction markets should be{" "}
-              <span className="text-[var(--accent)] font-medium">open source</span> for true democratization of tools that may shape humanity&apos;s future decisions.
-            </p>
-            <p className="text-muted leading-relaxed text-sm">
-              This is <span className="text-foreground font-medium">OSPM</span> — an experiment in transparent, open-source prediction market infrastructure. 
-              Place your bet below and become part of the story.
-            </p>
-          </div>
+      <div className="max-w-6xl mx-auto p-4 md:p-8">
+        {/* Hero Section */}
+        <div className="py-12 md:py-20 max-w-3xl">
+          <h2 className="text-xs font-bold uppercase tracking-widest text-[var(--accent)] mb-6">
+            Why This Exists
+          </h2>
+          <h1 className="text-2xl md:text-4xl font-medium leading-tight mb-8 text-foreground/90">
+            Prediction markets will have a <span className="text-foreground border-b-2 border-[var(--accent)]/30 pb-0.5">profound feedback effect</span> on decision making — similar to how the stock market influences public companies.
+          </h1>
+          <p className="text-lg md:text-xl text-muted leading-relaxed max-w-2xl">
+            Leading prediction markets must be <span className="text-[var(--accent)] font-medium">open source</span> to truly democratize the tools that shape our future decisions. This is an experiment in that transparency.
+          </p>
         </div>
 
         {/* Error Message */}
         {error && (
-          <div className="mb-6 p-4 rounded-xl bg-[var(--no-color)]/10 border border-[var(--no-color)]/30 text-center">
-            <p className="text-[var(--no-color)]">{error}</p>
+          <div className="mb-8 p-4 rounded-xl bg-[var(--no-color)]/10 border border-[var(--no-color)]/20 text-center">
+            <p className="text-[var(--no-color)] font-medium">{error}</p>
           </div>
         )}
 
@@ -265,7 +261,7 @@ export default function Home() {
         </div>
 
         {/* Footer */}
-        <footer className="mt-14 pt-8 border-t border-[var(--border-color)] text-center">
+        <footer className="mt-20 pt-8 border-t border-[var(--border-color)] text-center pb-8">
           <p className="text-sm text-muted">
             Built with Next.js, Prisma, and LMSR ·{" "}
             <span className="text-[var(--accent)]">Play money only</span>
