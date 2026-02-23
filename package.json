@@ -23,6 +23,10 @@
     "viem": "^2.46.2",
     "wagmi": "^3.5.0"
   },
+  "overrides": {
+    "pino": "7.11.0",
+    "thread-stream": "0.15.2"
+  },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20.19.27",
