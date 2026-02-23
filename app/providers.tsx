@@ -15,12 +15,14 @@ const wagmiConfig = createConfig({
   },
 });
 
+const PRIVY_APP_ID = process.env.NEXT_PUBLIC_PRIVY_APP_ID || "placeholder-for-build";
+
 export function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(() => new QueryClient());
 
   return (
     <PrivyProvider
-      appId={process.env.NEXT_PUBLIC_PRIVY_APP_ID!}
+      appId={PRIVY_APP_ID}
       config={{
         loginMethods: ["google", "email", "sms"],
         appearance: {
