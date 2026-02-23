@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useMarket } from "@/lib/api/hooks";
 import { useMarketContract } from "@/hooks/useMarketContract";
 import NavBar from "@/components/NavBar";
+import Spinner from "@/components/ui/Spinner";
 import StatusBadge from "@/components/admin/StatusBadge";
 import TradePanel from "@/components/trading/TradePanel";
 import ClaimWinnings from "@/components/trading/ClaimWinnings";
@@ -56,7 +57,7 @@ export default function MarketDetailPage({ params }: { params: Promise<{ id: str
       <>
         <NavBar />
         <div className="max-w-3xl mx-auto p-8">
-          <div className="text-center py-20 text-muted animate-pulse">Loading market...</div>
+          <Spinner label="Loading market..." />
         </div>
       </>
     );

@@ -7,6 +7,7 @@ import MarketSearch from "@/components/MarketSearch";
 import CategoryFilter from "@/components/CategoryFilter";
 import StatusTabs from "@/components/StatusTabs";
 import NavBar from "@/components/NavBar";
+import SkeletonCard from "@/components/ui/SkeletonCard";
 import type { Market } from "@/lib/api/types";
 
 const PUBLIC_STATUS_TABS = [
@@ -103,16 +104,12 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Loading State */}
+        {/* Loading State — Skeleton Cards */}
         {isLoading && allMarkets.length === 0 && (
-          <div className="text-center py-20">
-            <div className="animate-pulse-glow inline-block p-4 rounded-2xl bg-white/80 mb-4 shadow-sm">
-              <svg className="w-10 h-10 text-[var(--accent)] animate-spin" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-              </svg>
-            </div>
-            <h2 className="text-xl font-semibold">Loading Markets...</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <SkeletonCard key={i} />
+            ))}
           </div>
         )}
 
@@ -121,7 +118,13 @@ export default function Home() {
           <div className="text-center py-20 max-w-md mx-auto">
             <div className="text-5xl mb-4">⚠️</div>
             <h2 className="text-xl font-semibold mb-4">Failed to Load Markets</h2>
-            <p className="text-muted mb-6">Could not connect to the Oracle service.</p>
+            <p className="text-muted mb-4">Could not connect to the Oracle service.</p>
+            <button
+              onClick={() => window.location.reload()}
+              className="btn btn-primary mb-4"
+            >
+              Retry
+            </button>
             <code className="block p-4 bg-white rounded-xl text-sm text-[var(--accent)] border border-[var(--border-color)]">
               cd oracle && npm run dev
             </code>

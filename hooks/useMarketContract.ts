@@ -74,10 +74,10 @@ export function useMarketContract(marketAddress: `0x${string}` | undefined) {
 }
 
 export function usePlaceBet(marketAddress: `0x${string}` | undefined) {
-  const { writeContract: writeApprove, data: approveHash, isPending: approvePending } = useWriteContract();
+  const { writeContract: writeApprove, data: approveHash, isPending: approvePending, error: approveError } = useWriteContract();
   const { isLoading: approveConfirming, isSuccess: approveSuccess } = useWaitForTransactionReceipt({ hash: approveHash });
 
-  const { writeContract: writeBet, data: betHash, isPending: betPending } = useWriteContract();
+  const { writeContract: writeBet, data: betHash, isPending: betPending, error: betError } = useWriteContract();
   const { isLoading: betConfirming, isSuccess: betSuccess } = useWaitForTransactionReceipt({ hash: betHash });
 
   const approve = (amount: string) => {
@@ -107,6 +107,7 @@ export function usePlaceBet(marketAddress: `0x${string}` | undefined) {
     betSuccess,
     isPending: approvePending || approveConfirming || betPending || betConfirming,
     step: approveSuccess ? "bet" : "approve",
+    error: approveError || betError,
   };
 }
 

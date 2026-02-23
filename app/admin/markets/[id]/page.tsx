@@ -4,6 +4,7 @@ import { use, useState } from "react";
 import { useAdminMarket } from "@/lib/api/adminHooks";
 import { resolveMarket } from "@/lib/api/admin";
 import StatusBadge from "@/components/admin/StatusBadge";
+import Spinner from "@/components/ui/Spinner";
 import Link from "next/link";
 
 function formatDateTime(d: string | null) {
@@ -27,7 +28,7 @@ export default function MarketDetail({ params }: { params: Promise<{ id: string 
   const [message, setMessage] = useState("");
 
   if (error) return <div className="py-10 text-[var(--no-color)]">Failed to load market.</div>;
-  if (!market) return <div className="py-10 text-muted">Loading...</div>;
+  if (!market) return <Spinner />;
 
   const handleResolve = async (outcome: boolean) => {
     setResolving(true);

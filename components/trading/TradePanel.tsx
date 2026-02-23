@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { usePlayToken } from "@/hooks/usePlayToken";
 import { useMarketContract, usePlaceBet } from "@/hooks/useMarketContract";
+import { useToast } from "@/components/ui/Toast";
 
 interface TradePanelProps {
   marketAddress: `0x${string}`;
@@ -15,7 +16,8 @@ export default function TradePanel({ marketAddress }: TradePanelProps) {
   const { balance, rawBalance } = usePlayToken();
   const { yesPercent, noPercent, hasBet, betShares, betOutcome, betCost, chainStatus, refetchOdds, refetchBet } =
     useMarketContract(marketAddress);
-  const { approve, placeBet, approveSuccess, betSuccess, isPending, step } = usePlaceBet(marketAddress);
+  const { approve, placeBet, approveSuccess, betSuccess, isPending, step, error: betError } = usePlaceBet(marketAddress);
+  const { toast } = useToast();
 
   const [outcome, setOutcome] = useState<boolean | null>(null);
   const [amount, setAmount] = useState("");
@@ -36,8 +38,15 @@ export default function TradePanel({ marketAddress }: TradePanelProps) {
       refetchBet();
       setAmount("");
       setOutcome(null);
+      toast("Bet placed successfully!", "success");
     }
   }, [betSuccess]);
+
+  useEffect(() => {
+    if (betError) {
+      toast(`Transaction failed: ${betError.message || "Unknown error"}`, "error");
+    }
+  }, [betError]);
 
   if (!isAuthenticated) {
     return (

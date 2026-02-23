@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useAdminMarkets } from "@/lib/api/adminHooks";
 import StatusBadge from "@/components/admin/StatusBadge";
+import Spinner from "@/components/ui/Spinner";
 import MarketSearch from "@/components/MarketSearch";
 import CategoryFilter from "@/components/CategoryFilter";
 import StatusTabs from "@/components/StatusTabs";
@@ -170,9 +171,7 @@ export default function AdminMarkets() {
         </>
       )}
 
-      {!data && !error && (
-        <div className="text-center py-10 text-muted">Loading...</div>
-      )}
+      {!data && !error && <Spinner />}
     </div>
   );
 }

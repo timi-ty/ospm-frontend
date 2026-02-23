@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useSystemInfo } from "@/lib/api/adminHooks";
 import { triggerGeneration, triggerDeployment } from "@/lib/api/admin";
+import Spinner from "@/components/ui/Spinner";
 
 function HealthDot({ ok }: { ok: boolean }) {
   return (
@@ -33,7 +34,7 @@ export default function SystemPage() {
   const [actionMsg, setActionMsg] = useState("");
 
   if (error) return <div className="py-10 text-[var(--no-color)]">Cannot reach Oracle.</div>;
-  if (!data) return <div className="py-10 text-muted">Loading...</div>;
+  if (!data) return <Spinner />;
 
   const handleAction = async (label: string, fn: () => Promise<any>) => {
     setActionMsg(`${label}...`);

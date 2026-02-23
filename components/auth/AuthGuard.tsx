@@ -3,6 +3,7 @@
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import Spinner from "@/components/ui/Spinner";
 
 export default function AuthGuard({ children }: { children: React.ReactNode }) {
   const { isReady, isAuthenticated } = useAuth();
@@ -15,11 +16,7 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
   }, [isReady, isAuthenticated, router]);
 
   if (!isReady) {
-    return (
-      <div className="flex items-center justify-center min-h-[50vh]">
-        <div className="text-muted animate-pulse">Loading...</div>
-      </div>
-    );
+    return <Spinner />;
   }
 
   if (!isAuthenticated) return null;

@@ -4,6 +4,7 @@ import { useAdminStats, useTimeseries, useAdminMarkets } from "@/lib/api/adminHo
 import StatsCard from "@/components/admin/StatsCard";
 import StatusBadge from "@/components/admin/StatusBadge";
 import TimeSeriesChart from "@/components/admin/TimeSeriesChart";
+import Spinner from "@/components/ui/Spinner";
 import Link from "next/link";
 
 function formatRelative(dateStr: string) {
@@ -32,7 +33,7 @@ export default function AdminOverview() {
   }
 
   if (!stats) {
-    return <div className="text-center py-20 text-muted">Loading...</div>;
+    return <Spinner />;
   }
 
   const m = stats.markets;
@@ -70,7 +71,7 @@ export default function AdminOverview() {
         {ts ? (
           <TimeSeriesChart data={ts.days} />
         ) : (
-          <div className="h-[300px] flex items-center justify-center text-muted">Loading chart...</div>
+          <div className="h-[300px] flex items-center justify-center"><Spinner /></div>
         )}
       </div>
 
