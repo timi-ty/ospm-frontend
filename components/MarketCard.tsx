@@ -1,4 +1,6 @@
+import Link from "next/link";
 import type { Market } from "@/lib/api/types";
+import StatusBadge from "@/components/admin/StatusBadge";
 
 interface MarketCardProps {
   market: Market;
@@ -12,73 +14,71 @@ function formatDate(dateString: string): string {
   });
 }
 
-function getStatusColor(status: string): string {
-  switch (status) {
-    case "active":
-      return "text-[var(--yes-color)]";
-    case "pending":
-      return "text-[var(--accent)]";
-    case "resolved":
-      return "text-muted";
-    default:
-      return "text-muted";
-  }
+function formatRelative(dateStr: string) {
+  const diff = new Date(dateStr).getTime() - Date.now();
+  if (diff < 0) return "passed";
+  const hours = Math.floor(diff / 3600000);
+  const mins = Math.floor((diff % 3600000) / 60000);
+  if (hours > 48) return `${Math.floor(hours / 24)}d`;
+  if (hours > 0) return `${hours}h ${mins}m`;
+  return `${mins}m`;
+}
+
+function computeOdds(qYes: number, qNo: number, b: number): { yes: number; no: number } {
+  if (b === 0) return { yes: 50, no: 50 };
+  const a = qYes / b;
+  const d = qNo / b;
+  const m = Math.max(a, d);
+  const expA = Math.exp(a - m);
+  const expD = Math.exp(d - m);
+  const sum = expA + expD;
+  const yes = Math.round((expA / sum) * 100);
+  return { yes, no: 100 - yes };
 }
 
 export default function MarketCard({ market }: MarketCardProps) {
+  const odds = computeOdds(market.qYes ?? 0, market.qNo ?? 0, market.b ?? 100);
+
   return (
-    <div className="card animate-fade-in-up">
-      {/* Category & Status */}
-      <div className="flex items-center justify-between mb-4">
-        <span className="text-xs font-medium uppercase tracking-wider text-muted bg-[var(--foreground)]/5 px-2 py-1 rounded">
-          {market.category}
-        </span>
-        <span className={`text-xs font-medium uppercase tracking-wider ${getStatusColor(market.status)}`}>
-          {market.status}
-        </span>
-      </div>
+    <Link href={`/markets/${market.id}`} className="block">
+      <div className="card animate-fade-in-up hover:border-[var(--border-hover)] transition-all cursor-pointer">
+        {/* Category & Status */}
+        <div className="flex items-center justify-between mb-3">
+          <span className="text-xs font-medium uppercase tracking-wider text-muted bg-[var(--foreground)]/5 px-2 py-1 rounded">
+            {market.category}
+          </span>
+          <StatusBadge status={market.status} />
+        </div>
 
-      {/* Question */}
-      <h3 className="text-lg font-semibold leading-tight mb-3">
-        {market.question}
-      </h3>
+        {/* Question */}
+        <h3 className="text-base font-semibold leading-tight mb-2 line-clamp-2">
+          {market.question}
+        </h3>
 
-      {/* Description */}
-      {market.description && (
-        <p className="text-sm text-muted mb-4 line-clamp-2">
-          {market.description}
-        </p>
-      )}
+        {/* Description */}
+        {market.description && (
+          <p className="text-sm text-muted mb-3 line-clamp-2">
+            {market.description}
+          </p>
+        )}
 
-      {/* Dates */}
-      <div className="grid grid-cols-2 gap-4 pt-4 border-t border-[var(--border-color)]">
-        <div>
-          <div className="text-xs text-muted font-medium uppercase tracking-wider">
-            Betting Closes
+        {/* Odds Bar */}
+        <div className="mb-3">
+          <div className="flex justify-between text-xs font-mono mb-1">
+            <span className="text-[var(--yes-color)] font-semibold">YES {odds.yes}%</span>
+            <span className="text-[var(--no-color)] font-semibold">NO {odds.no}%</span>
           </div>
-          <div className="text-sm font-medium mt-1">
-            {formatDate(market.bettingClosesAt)}
+          <div className="probability-bar">
+            <div className="probability-bar-fill probability-bar-yes" style={{ width: `${odds.yes}%` }} />
           </div>
         </div>
-        <div>
-          <div className="text-xs text-muted font-medium uppercase tracking-wider">
-            Resolves
-          </div>
-          <div className="text-sm font-medium mt-1">
-            {formatDate(market.resolvesAt)}
-          </div>
+
+        {/* Dates */}
+        <div className="flex items-center justify-between pt-3 border-t border-[var(--border-color)] text-xs text-muted">
+          <span>Closes {formatRelative(market.bettingClosesAt)}</span>
+          <span>{formatDate(market.bettingClosesAt)}</span>
         </div>
       </div>
-
-      {/* Source Link */}
-      <a
-        href={market.sourceUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="mt-4 text-xs text-[var(--accent)] hover:underline inline-flex items-center gap-1"
-      >
-        View Source →
-      </a>
-    </div>
+    </Link>
   );
 }

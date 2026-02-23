@@ -7,6 +7,7 @@ export async function getMarkets(params?: MarketsParams): Promise<MarketsRespons
   
   if (params?.status) url.searchParams.set("status", params.status);
   if (params?.category) url.searchParams.set("category", params.category);
+  if (params?.search) url.searchParams.set("search", params.search);
   if (params?.limit) url.searchParams.set("limit", params.limit.toString());
   if (params?.offset) url.searchParams.set("offset", params.offset.toString());
   
