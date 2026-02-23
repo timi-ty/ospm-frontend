@@ -7,7 +7,7 @@ function truncateAddress(addr: string) {
 }
 
 export function useAuth() {
-  const { login, logout, authenticated, user, ready } = usePrivy();
+  const { login, logout, authenticated, user, ready, getAccessToken } = usePrivy();
   const { wallets } = useWallets();
 
   const embeddedWallet = wallets.find(
@@ -37,5 +37,6 @@ export function useAuth() {
     displayName,
     email,
     avatarUrl,
+    getAccessToken,
   };
 }

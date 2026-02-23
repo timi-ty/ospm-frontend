@@ -34,3 +34,29 @@ export interface MarketsParams {
   limit?: number;
   offset?: number;
 }
+
+export interface UserBet {
+  id: string;
+  outcome: boolean;
+  shares: number;
+  costBasis: number;
+  claimed: boolean;
+  createdAt: string;
+  market: {
+    id: string;
+    question: string;
+    contractAddress: string | null;
+    status: string;
+    resolvedOutcome: boolean | null;
+    qYes: number;
+    qNo: number;
+    b: number;
+  };
+}
+
+export interface LeaderboardEntry {
+  address: string;
+  wins: number;
+  totalProfit: string;
+  totalBets: number;
+}
