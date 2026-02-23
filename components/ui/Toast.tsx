@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useCallback, useContext, useState, useRef } from "react";
+import { Check, X, Info, type LucideIcon } from "lucide-react";
 
 type ToastType = "success" | "error" | "info";
 
@@ -53,9 +54,11 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
             }`}
           >
             <div className="flex items-center gap-2">
-              <span>
-                {t.type === "success" ? "✓" : t.type === "error" ? "✗" : "ℹ"}
-              </span>
+              {(() => {
+                const icons: Record<ToastType, LucideIcon> = { success: Check, error: X, info: Info };
+                const Icon = icons[t.type];
+                return <Icon className="w-4 h-4 shrink-0" />;
+              })()}
               <span>{t.message}</span>
             </div>
           </div>

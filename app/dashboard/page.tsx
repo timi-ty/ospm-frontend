@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import NavBar from "@/components/NavBar";
+import { BarChart3 } from "lucide-react";
 import AuthGuard from "@/components/auth/AuthGuard";
 import { useAuth } from "@/hooks/useAuth";
 import { usePlayToken } from "@/hooks/usePlayToken";
@@ -217,7 +218,7 @@ function DashboardContent() {
       {/* Empty State */}
       {!isLoading && !error && bets && bets.length === 0 && (
         <div className="text-center py-16">
-          <div className="text-4xl mb-3">📊</div>
+          <BarChart3 className="w-10 h-10 text-muted mx-auto mb-3" />
           <h2 className="text-lg font-semibold mb-2">No Bets Yet</h2>
           <p className="text-muted mb-4">Start predicting on open markets.</p>
           <Link href="/" className="btn btn-primary">Browse Markets</Link>

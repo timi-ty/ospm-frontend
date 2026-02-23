@@ -2,11 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { LayoutDashboard, List, Settings, ArrowLeft, type LucideIcon } from "lucide-react";
 
-const NAV_ITEMS = [
-  { href: "/admin", label: "Overview", icon: "📊" },
-  { href: "/admin/markets", label: "Markets", icon: "📋" },
-  { href: "/admin/system", label: "System", icon: "⚙️" },
+const NAV_ITEMS: { href: string; label: string; icon: LucideIcon }[] = [
+  { href: "/admin", label: "Overview", icon: LayoutDashboard },
+  { href: "/admin/markets", label: "Markets", icon: List },
+  { href: "/admin/system", label: "System", icon: Settings },
 ];
 
 export default function Sidebar() {
@@ -14,8 +15,9 @@ export default function Sidebar() {
 
   return (
     <aside className="w-56 shrink-0 border-r border-[var(--border-color)] bg-[var(--background-secondary)] min-h-screen p-4 flex flex-col gap-1">
-      <Link href="/" className="text-xs text-muted hover:text-[var(--accent)] mb-6 block">
-        ← Back to Site
+      <Link href="/" className="flex items-center gap-1.5 text-xs text-muted hover:text-[var(--accent)] mb-6">
+        <ArrowLeft className="w-3.5 h-3.5" />
+        Back to Site
       </Link>
       <h2 className="text-sm font-bold uppercase tracking-widest text-muted mb-4 px-3">
         Admin
@@ -35,7 +37,7 @@ export default function Sidebar() {
                 : "text-[var(--foreground)] hover:bg-[var(--foreground)]/5"
             }`}
           >
-            <span className="text-base">{item.icon}</span>
+            <item.icon className="w-4 h-4" />
             {item.label}
           </Link>
         );

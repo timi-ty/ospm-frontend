@@ -8,6 +8,7 @@ import CategoryFilter from "@/components/CategoryFilter";
 import StatusTabs from "@/components/StatusTabs";
 import NavBar from "@/components/NavBar";
 import SkeletonCard from "@/components/ui/SkeletonCard";
+import { Sparkles, AlertTriangle, Inbox } from "lucide-react";
 import type { Market } from "@/lib/api/types";
 
 const PUBLIC_STATUS_TABS = [
@@ -81,7 +82,7 @@ export default function Home() {
           </p>
           <div className="mt-8 p-4 bg-[var(--accent)]/10 border border-[var(--accent)]/20 rounded-xl inline-block text-left w-full sm:w-auto">
             <div className="flex items-start gap-3">
-              <span className="text-xl shrink-0 leading-none mt-0.5">✨</span>
+              <Sparkles className="w-5 h-5 shrink-0 text-[var(--accent)]" />
               <p className="text-sm text-[var(--foreground)] font-medium leading-snug">
                 Markets are AI-generated from real-world news sources,
                 identifying upcoming events worth predicting.
@@ -116,7 +117,7 @@ export default function Home() {
         {/* Error State */}
         {error && (
           <div className="text-center py-20 max-w-md mx-auto">
-            <div className="text-5xl mb-4">⚠️</div>
+            <AlertTriangle className="w-12 h-12 text-[var(--no-color)] mx-auto mb-4" />
             <h2 className="text-xl font-semibold mb-4">Failed to Load Markets</h2>
             <p className="text-muted mb-4">Could not connect to the Oracle service.</p>
             <button
@@ -152,7 +153,7 @@ export default function Home() {
         {/* Empty State */}
         {!isLoading && !error && allMarkets.length === 0 && data && (
           <div className="text-center py-20">
-            <div className="text-5xl mb-4">📭</div>
+            <Inbox className="w-12 h-12 text-muted mx-auto mb-4" />
             <h2 className="text-xl font-semibold mb-2">No Markets Found</h2>
             <p className="text-muted">
               {search ? `No markets match "${search}".` : "Markets will appear once generated."}

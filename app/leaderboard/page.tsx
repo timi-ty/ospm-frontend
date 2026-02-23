@@ -1,6 +1,7 @@
 "use client";
 
 import NavBar from "@/components/NavBar";
+import { Trophy } from "lucide-react";
 import { useLeaderboard } from "@/lib/api/userHooks";
 
 function truncateAddress(addr: string) {
@@ -92,7 +93,7 @@ export default function LeaderboardPage() {
         {/* Empty State */}
         {!isLoading && !error && entries && entries.length === 0 && (
           <div className="text-center py-16">
-            <div className="text-4xl mb-3">🏆</div>
+            <Trophy className="w-10 h-10 text-[var(--accent)] mx-auto mb-3" />
             <h2 className="text-lg font-semibold mb-2">No Rankings Yet</h2>
             <p className="text-muted">The leaderboard will populate once markets resolve and bets are settled.</p>
           </div>

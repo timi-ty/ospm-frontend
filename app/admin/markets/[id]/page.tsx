@@ -6,6 +6,7 @@ import { resolveMarket } from "@/lib/api/admin";
 import StatusBadge from "@/components/admin/StatusBadge";
 import Spinner from "@/components/ui/Spinner";
 import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 
 function formatDateTime(d: string | null) {
   if (!d) return "—";
@@ -46,8 +47,9 @@ export default function MarketDetail({ params }: { params: Promise<{ id: string 
 
   return (
     <div>
-      <Link href="/admin/markets" className="text-xs text-muted hover:text-[var(--accent)] mb-4 block">
-        ← Back to Markets
+      <Link href="/admin/markets" className="flex items-center gap-1.5 text-xs text-muted hover:text-[var(--accent)] mb-4">
+        <ArrowLeft className="w-3.5 h-3.5" />
+        Back to Markets
       </Link>
 
       <div className="flex items-start justify-between gap-4 mb-6">

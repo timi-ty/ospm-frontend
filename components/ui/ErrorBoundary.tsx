@@ -1,6 +1,7 @@
 "use client";
 
 import { Component, type ReactNode } from "react";
+import { AlertTriangle } from "lucide-react";
 
 interface Props {
   children: ReactNode;
@@ -31,7 +32,7 @@ export class ErrorBoundary extends Component<Props, State> {
       if (this.props.fallback) return this.props.fallback;
       return (
         <div className="card p-8 text-center max-w-md mx-auto my-12">
-          <div className="text-4xl mb-3">⚠️</div>
+          <AlertTriangle className="w-10 h-10 text-[var(--no-color)] mx-auto mb-3" />
           <h2 className="text-lg font-semibold mb-2">Something went wrong</h2>
           <p className="text-sm text-muted mb-4">
             {this.state.error?.message || "An unexpected error occurred."}

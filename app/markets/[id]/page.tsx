@@ -2,6 +2,7 @@
 
 import { use } from "react";
 import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 import { useMarket } from "@/lib/api/hooks";
 import { useMarketContract } from "@/hooks/useMarketContract";
 import NavBar from "@/components/NavBar";
@@ -43,8 +44,9 @@ export default function MarketDetailPage({ params }: { params: Promise<{ id: str
       <>
         <NavBar />
         <div className="max-w-3xl mx-auto p-8">
-          <Link href="/" className="text-sm text-muted hover:text-[var(--accent)] mb-4 block">
-            ← Back to Markets
+          <Link href="/" className="flex items-center gap-1.5 text-sm text-muted hover:text-[var(--accent)] mb-4">
+            <ArrowLeft className="w-4 h-4" />
+            Back to Markets
           </Link>
           <div className="text-center py-20 text-[var(--no-color)]">Market not found.</div>
         </div>
@@ -70,8 +72,9 @@ export default function MarketDetailPage({ params }: { params: Promise<{ id: str
     <>
     <NavBar />
     <div className="max-w-3xl mx-auto p-4 md:p-8">
-      <Link href="/" className="text-sm text-muted hover:text-[var(--accent)] mb-6 block">
-        ← Back to Markets
+      <Link href="/" className="flex items-center gap-1.5 text-sm text-muted hover:text-[var(--accent)] mb-6">
+        <ArrowLeft className="w-4 h-4" />
+        Back to Markets
       </Link>
 
       {/* Header */}

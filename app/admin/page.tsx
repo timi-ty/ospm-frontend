@@ -5,6 +5,7 @@ import StatsCard from "@/components/admin/StatsCard";
 import StatusBadge from "@/components/admin/StatusBadge";
 import TimeSeriesChart from "@/components/admin/TimeSeriesChart";
 import Spinner from "@/components/ui/Spinner";
+import { Check, X } from "lucide-react";
 import Link from "next/link";
 
 function formatRelative(dateStr: string) {
@@ -130,7 +131,7 @@ export default function AdminOverview() {
       <div className="mt-8 p-4 rounded-lg bg-[var(--foreground)]/3 flex flex-wrap gap-6 text-xs text-muted">
         <span>Tick #{s.tickCount}</span>
         <span>Wallet: {parseFloat(s.oracleWalletBalance).toFixed(4)} ETH</span>
-        <span>Data Service: {s.dataServiceHealthy ? "✓" : "✗"}</span>
+        <span className="inline-flex items-center gap-1">Data Service: {s.dataServiceHealthy ? <Check className="w-3.5 h-3.5" /> : <X className="w-3.5 h-3.5" />}</span>
         <span>Up since: {new Date(s.oracleUpSince).toLocaleString()}</span>
       </div>
     </div>
