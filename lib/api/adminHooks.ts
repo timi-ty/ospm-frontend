@@ -31,3 +31,39 @@ export function useMarketMaking() {
   const token = useAdminToken();
   return useSWR(token ? "admin-market-making" : null, () => getMarketMaking(token!), { refreshInterval: 30000 });
 }
+
+interface HealthHandler {
+  name: string;
+  lastRunAt: string | null;
+}
+
+interface HealthEntry {
+  tickCount: number;
+  status: string;
+  details: Record<string, string> | null;
+  createdAt: string;
+}
+
+export interface DetailedHealth {
+  status: string;
+  uptimeSeconds: number;
+  lastTickAt: string | null;
+  tickCount: number;
+  handlers: HealthHandler[];
+  recentHealth: HealthEntry[];
+}
+
+const ORACLE_URL = process.env.NEXT_PUBLIC_ORACLE_URL || "http://localhost:3001";
+
+async function fetchDetailedHealth(): Promise<DetailedHealth> {
+  const res = await fetch(`${ORACLE_URL}/health/detailed`);
+  if (!res.ok) throw new Error("Health check failed");
+  return res.json();
+}
+
+export function useDetailedHealth() {
+  return useSWR<DetailedHealth>("health-detailed", fetchDetailedHealth, {
+    refreshInterval: 15000,
+    errorRetryCount: 2,
+  });
+}

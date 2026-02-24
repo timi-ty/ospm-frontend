@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useSystemInfo } from "@/lib/api/adminHooks";
+import { useSystemInfo, useDetailedHealth } from "@/lib/api/adminHooks";
+import type { DetailedHealth } from "@/lib/api/adminHooks";
 import { triggerGeneration, triggerDeployment, updateAdminWallet } from "@/lib/api/admin";
 import { useAdminToken } from "@/lib/api/useAdminToken";
 import { useToast } from "@/components/ui/Toast";
@@ -104,8 +105,130 @@ function WalletConfig({ currentAddress, onUpdated }: { currentAddress: string; o
   );
 }
 
+function formatUptime(seconds: number): string {
+  const d = Math.floor(seconds / 86400);
+  const h = Math.floor((seconds % 86400) / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  if (d > 0) return `${d}d ${h}h ${m}m`;
+  if (h > 0) return `${h}h ${m}m`;
+  return `${m}m`;
+}
+
+function timeAgo(iso: string): string {
+  const seconds = Math.floor((Date.now() - new Date(iso).getTime()) / 1000);
+  if (seconds < 60) return `${seconds}s ago`;
+  if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
+  return `${Math.floor(seconds / 3600)}h ago`;
+}
+
+function StatusBadgeSmall({ status }: { status: string }) {
+  const color = status === "healthy"
+    ? "bg-[var(--yes-color)]/15 text-[var(--yes-color)]"
+    : status === "degraded"
+      ? "bg-[var(--no-color)]/15 text-[var(--no-color)]"
+      : "bg-[var(--foreground)]/10 text-muted";
+  return (
+    <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${color}`}>
+      {status}
+    </span>
+  );
+}
+
+function HealthMetrics({ health }: { health: DetailedHealth }) {
+  const [expandedTick, setExpandedTick] = useState<number | null>(null);
+
+  return (
+    <>
+      {/* Uptime Banner */}
+      <Section title="Health Metrics">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+          <div>
+            <div className="text-xs text-muted">Status</div>
+            <StatusBadgeSmall status={health.status} />
+          </div>
+          <div>
+            <div className="text-xs text-muted">Uptime</div>
+            <div className="text-sm font-bold font-mono">{formatUptime(health.uptimeSeconds)}</div>
+          </div>
+          <div>
+            <div className="text-xs text-muted">Last Tick</div>
+            <div className="text-sm font-bold font-mono">
+              {health.lastTickAt ? timeAgo(health.lastTickAt) : "never"}
+            </div>
+          </div>
+          <div>
+            <div className="text-xs text-muted">Total Ticks</div>
+            <div className="text-sm font-bold font-mono">{health.tickCount}</div>
+          </div>
+        </div>
+
+        {/* Handler Status */}
+        {health.handlers.length > 0 && (
+          <div className="mb-4">
+            <div className="text-xs text-muted uppercase tracking-wider mb-2">Handlers</div>
+            <div className="space-y-1">
+              {health.handlers.map((h) => {
+                const latestDetails = health.recentHealth[0]?.details;
+                const handlerStatus = latestDetails?.[h.name] || "unknown";
+                return (
+                  <div key={h.name} className="flex items-center justify-between py-1.5 px-2 rounded bg-[var(--foreground)]/[0.02]">
+                    <div className="flex items-center gap-2">
+                      <HealthDot ok={handlerStatus === "ok"} />
+                      <span className="font-mono text-xs">{h.name}</span>
+                    </div>
+                    <span className="text-xs text-muted">
+                      {h.lastRunAt ? timeAgo(h.lastRunAt) : "never"}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* Recent Health Log */}
+        {health.recentHealth.length > 0 && (
+          <div>
+            <div className="text-xs text-muted uppercase tracking-wider mb-2">Recent Ticks</div>
+            <div className="space-y-1">
+              {health.recentHealth.map((entry) => (
+                <div key={entry.tickCount}>
+                  <button
+                    onClick={() => setExpandedTick(expandedTick === entry.tickCount ? null : entry.tickCount)}
+                    className={`w-full flex items-center justify-between py-2 px-2 rounded text-left transition-colors ${
+                      entry.status === "degraded" ? "bg-[var(--no-color)]/5" : "hover:bg-[var(--foreground)]/[0.02]"
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className="font-mono text-xs text-muted w-10">#{entry.tickCount}</span>
+                      <StatusBadgeSmall status={entry.status} />
+                    </div>
+                    <span className="text-xs text-muted">{timeAgo(entry.createdAt)}</span>
+                  </button>
+                  {expandedTick === entry.tickCount && entry.details && (
+                    <div className="ml-14 mb-2 p-2 rounded bg-[var(--foreground)]/[0.03] text-xs space-y-1">
+                      {Object.entries(entry.details).map(([handler, status]) => (
+                        <div key={handler} className="flex items-center gap-2">
+                          <HealthDot ok={status === "ok"} />
+                          <span className="font-mono">{handler}</span>
+                          <span className="text-muted">— {status}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </Section>
+    </>
+  );
+}
+
 export default function SystemPage() {
   const { data, error, mutate } = useSystemInfo();
+  const { data: health } = useDetailedHealth();
   const token = useAdminToken();
   const [actionMsg, setActionMsg] = useState("");
 
@@ -136,6 +259,9 @@ export default function SystemPage() {
           <KV label="Blockchain" value={<span className="flex items-center gap-2"><HealthDot ok={data.blockchain.connected} /> Chain {data.blockchain.chainId || "N/A"}</span>} />
         </div>
       </Section>
+
+      {/* Health Metrics */}
+      {health && <HealthMetrics health={health} />}
 
       {/* Orchestrator */}
       <Section title="Orchestrator">
