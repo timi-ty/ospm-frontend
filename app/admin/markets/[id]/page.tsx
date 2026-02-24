@@ -3,6 +3,7 @@
 import { use, useState } from "react";
 import { useAdminMarket } from "@/lib/api/adminHooks";
 import { resolveMarket } from "@/lib/api/admin";
+import { useAdminToken } from "@/lib/api/useAdminToken";
 import StatusBadge from "@/components/admin/StatusBadge";
 import Spinner from "@/components/ui/Spinner";
 import Link from "next/link";
@@ -25,6 +26,7 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 export default function MarketDetail({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const { data: market, error, mutate } = useAdminMarket(id);
+  const token = useAdminToken();
   const [resolving, setResolving] = useState(false);
   const [message, setMessage] = useState("");
 
@@ -32,10 +34,11 @@ export default function MarketDetail({ params }: { params: Promise<{ id: string 
   if (!market) return <Spinner />;
 
   const handleResolve = async (outcome: boolean) => {
+    if (!token) return;
     setResolving(true);
     setMessage("");
     try {
-      await resolveMarket(market.id, outcome);
+      await resolveMarket(market.id, outcome, token);
       setMessage(`Resolution proposed: ${outcome ? "YES" : "NO"}`);
       mutate();
     } catch (err: any) {

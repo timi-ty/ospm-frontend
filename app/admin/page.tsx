@@ -1,6 +1,6 @@
 "use client";
 
-import { useAdminStats, useTimeseries, useAdminMarkets } from "@/lib/api/adminHooks";
+import { useAdminStats, useTimeseries, useAdminMarkets, useMarketMaking } from "@/lib/api/adminHooks";
 import StatsCard from "@/components/admin/StatsCard";
 import StatusBadge from "@/components/admin/StatusBadge";
 import TimeSeriesChart from "@/components/admin/TimeSeriesChart";
@@ -23,6 +23,7 @@ export default function AdminOverview() {
   const { data: ts } = useTimeseries(14);
   const { data: expiring } = useAdminMarkets({ expiresWithin: 1440, limit: 5 });
   const { data: recent } = useAdminMarkets({ limit: 10 });
+  const { data: mm } = useMarketMaking();
 
   if (statsError) {
     return (
@@ -63,6 +64,43 @@ export default function AdminOverview() {
         <StatsCard label="Resolved" value={m.byStatus.resolved ?? 0} />
         <StatsCard label="On-Chain" value={m.deployedOnChain} sub={`${m.createdLast24h} new today`} />
       </div>
+
+      {/* Market Making */}
+      {mm && (
+        <div className="card p-5 mb-8">
+          <h2 className="text-sm font-semibold uppercase tracking-wider text-muted mb-4">
+            Market Making
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            <div>
+              <div className="text-xs text-muted">Oracle ETH</div>
+              <div className="text-lg font-bold font-mono">{parseFloat(mm.oracleEthBalance).toFixed(4)}</div>
+            </div>
+            <div>
+              <div className="text-xs text-muted">Oracle PLAY</div>
+              <div className="text-lg font-bold font-mono">{parseFloat(mm.oraclePlayBalance).toFixed(0)}</div>
+            </div>
+            <div>
+              <div className="text-xs text-muted">Markets w/ Bets</div>
+              <div className="text-lg font-bold font-mono">{mm.marketCount}</div>
+            </div>
+            <div>
+              <div className="text-xs text-muted">Total Collected</div>
+              <div className="text-lg font-bold font-mono">{mm.totalCollected.toFixed(1)}</div>
+            </div>
+            <div>
+              <div className="text-xs text-muted">Max Payout</div>
+              <div className="text-lg font-bold font-mono">{mm.maxPotentialPayout.toFixed(1)}</div>
+            </div>
+            <div>
+              <div className="text-xs text-muted">Net Exposure</div>
+              <div className={`text-lg font-bold font-mono ${mm.totalExposure > 0 ? "text-[var(--no-color)]" : "text-[var(--yes-color)]"}`}>
+                {mm.totalExposure > 0 ? "+" : ""}{mm.totalExposure.toFixed(1)}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Time-Series Chart */}
       <div className="card p-5 mb-8">

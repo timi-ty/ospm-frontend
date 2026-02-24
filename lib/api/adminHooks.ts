@@ -1,17 +1,21 @@
 import useSWR from "swr";
-import { getAdminStats, getTimeseries, getAdminMarkets, getMarketById, getSystemInfo } from "./admin";
+import { getAdminStats, getTimeseries, getAdminMarkets, getMarketById, getSystemInfo, getMarketMaking } from "./admin";
+import { useAdminToken } from "./useAdminToken";
 
 export function useAdminStats() {
-  return useSWR("admin-stats", getAdminStats, { refreshInterval: 15000 });
+  const token = useAdminToken();
+  return useSWR(token ? "admin-stats" : null, () => getAdminStats(token!), { refreshInterval: 15000 });
 }
 
 export function useTimeseries(days = 7) {
-  return useSWR(["admin-timeseries", days], () => getTimeseries(days), { refreshInterval: 60000 });
+  const token = useAdminToken();
+  return useSWR(token ? ["admin-timeseries", days] : null, () => getTimeseries(days, token!), { refreshInterval: 60000 });
 }
 
 export function useAdminMarkets(params: Record<string, string | number | boolean | undefined> = {}) {
-  const key = JSON.stringify(["admin-markets", params]);
-  return useSWR(key, () => getAdminMarkets(params), { refreshInterval: 15000 });
+  const token = useAdminToken();
+  const key = token ? JSON.stringify(["admin-markets", params]) : null;
+  return useSWR(key, () => getAdminMarkets(params, token!), { refreshInterval: 15000 });
 }
 
 export function useAdminMarket(id: string | null) {
@@ -19,5 +23,11 @@ export function useAdminMarket(id: string | null) {
 }
 
 export function useSystemInfo() {
-  return useSWR("admin-system", getSystemInfo, { refreshInterval: 10000 });
+  const token = useAdminToken();
+  return useSWR(token ? "admin-system" : null, () => getSystemInfo(token!), { refreshInterval: 10000 });
+}
+
+export function useMarketMaking() {
+  const token = useAdminToken();
+  return useSWR(token ? "admin-market-making" : null, () => getMarketMaking(token!), { refreshInterval: 30000 });
 }

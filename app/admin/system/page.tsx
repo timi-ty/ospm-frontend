@@ -2,7 +2,9 @@
 
 import { useState } from "react";
 import { useSystemInfo } from "@/lib/api/adminHooks";
-import { triggerGeneration, triggerDeployment } from "@/lib/api/admin";
+import { triggerGeneration, triggerDeployment, updateAdminWallet } from "@/lib/api/admin";
+import { useAdminToken } from "@/lib/api/useAdminToken";
+import { useToast } from "@/components/ui/Toast";
 import Spinner from "@/components/ui/Spinner";
 
 function HealthDot({ ok }: { ok: boolean }) {
@@ -29,17 +31,92 @@ function KV({ label, value }: { label: string; value: React.ReactNode }) {
   );
 }
 
+function WalletConfig({ currentAddress, onUpdated }: { currentAddress: string; onUpdated: () => void }) {
+  const token = useAdminToken();
+  const { toast } = useToast();
+  const [open, setOpen] = useState(false);
+  const [privateKey, setPrivateKey] = useState("");
+  const [password, setPassword] = useState("");
+  const [pending, setPending] = useState(false);
+
+  const handleSubmit = async () => {
+    if (!token || !privateKey || !password) return;
+    setPending(true);
+    try {
+      const result = await updateAdminWallet(privateKey, password, token);
+      toast(`Wallet updated: ${result.address}`, "success");
+      setOpen(false);
+      setPrivateKey("");
+      setPassword("");
+      onUpdated();
+    } catch (err: any) {
+      toast(err.message || "Failed to update wallet", "error");
+    } finally {
+      setPending(false);
+    }
+  };
+
+  if (!open) {
+    return (
+      <div className="mt-4 pt-4 border-t border-[var(--border-color)]/50">
+        <button onClick={() => setOpen(true)} className="btn btn-outline text-sm">
+          Change Wallet
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="mt-4 pt-4 border-t border-[var(--border-color)]/50 space-y-3">
+      <div>
+        <label className="text-xs text-muted block mb-1">New Private Key</label>
+        <input
+          type="password"
+          value={privateKey}
+          onChange={(e) => setPrivateKey(e.target.value)}
+          placeholder="0x..."
+          className="w-full"
+        />
+      </div>
+      <div>
+        <label className="text-xs text-muted block mb-1">Admin Password</label>
+        <input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Enter admin password"
+          className="w-full"
+        />
+      </div>
+      <div className="flex gap-2">
+        <button
+          onClick={handleSubmit}
+          disabled={pending || !privateKey || !password}
+          className="btn btn-primary text-sm"
+        >
+          {pending ? "Updating..." : "Confirm"}
+        </button>
+        <button onClick={() => { setOpen(false); setPrivateKey(""); setPassword(""); }} className="btn btn-outline text-sm">
+          Cancel
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export default function SystemPage() {
   const { data, error, mutate } = useSystemInfo();
+  const token = useAdminToken();
   const [actionMsg, setActionMsg] = useState("");
 
   if (error) return <div className="py-10 text-[var(--no-color)]">Cannot reach Oracle.</div>;
   if (!data) return <Spinner />;
 
-  const handleAction = async (label: string, fn: () => Promise<any>) => {
+  const handleAction = async (label: string, fn: (token: string) => Promise<any>) => {
+    if (!token) return;
     setActionMsg(`${label}...`);
     try {
-      const result = await fn();
+      const result = await fn(token);
       setActionMsg(`${label}: ${JSON.stringify(result)}`);
       mutate();
     } catch (err: any) {
@@ -81,7 +158,7 @@ export default function SystemPage() {
         )}
       </Section>
 
-      {/* Blockchain */}
+      {/* Blockchain + Wallet Config */}
       {data.blockchain.connected && (
         <Section title="Blockchain">
           <div className="space-y-1">
@@ -103,6 +180,7 @@ export default function SystemPage() {
               </a>
             } />
           </div>
+          <WalletConfig currentAddress={data.blockchain.oracleAddress} onUpdated={() => mutate()} />
         </Section>
       )}
 
