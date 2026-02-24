@@ -88,3 +88,28 @@ export async function updateAdminWallet(privateKey: string, password: string, to
   }
   return res.json();
 }
+
+export async function sendBroadcastEmail(subject: string, html: string, token: string) {
+  const res = await fetch(`${ORACLE_URL}/api/admin/email/broadcast`, {
+    method: "POST",
+    headers: adminHeaders(token),
+    body: JSON.stringify({ subject, html }),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ error: "Unknown error" }));
+    throw new Error(err.error);
+  }
+  return res.json();
+}
+
+export async function getBroadcastStatus(token: string) {
+  const res = await fetch(`${ORACLE_URL}/api/admin/email/status`, { headers: adminHeaders(token) });
+  if (!res.ok) throw new Error(`Failed to fetch broadcast status: ${res.status}`);
+  return res.json();
+}
+
+export async function getEmailableUserCount(token: string) {
+  const res = await fetch(`${ORACLE_URL}/api/admin/email/user-count`, { headers: adminHeaders(token) });
+  if (!res.ok) throw new Error(`Failed to fetch user count: ${res.status}`);
+  return res.json();
+}

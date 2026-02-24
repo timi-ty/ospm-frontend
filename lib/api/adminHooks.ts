@@ -1,5 +1,5 @@
 import useSWR from "swr";
-import { getAdminStats, getTimeseries, getAdminMarkets, getMarketById, getSystemInfo, getMarketMaking } from "./admin";
+import { getAdminStats, getTimeseries, getAdminMarkets, getMarketById, getSystemInfo, getMarketMaking, getBroadcastStatus, getEmailableUserCount } from "./admin";
 import { useAdminToken } from "./useAdminToken";
 
 export function useAdminStats() {
@@ -66,4 +66,30 @@ export function useDetailedHealth() {
     refreshInterval: 15000,
     errorRetryCount: 2,
   });
+}
+
+export interface BroadcastStatus {
+  status: "idle" | "sending" | "done";
+  total: number;
+  sent: number;
+  failed: number;
+  startedAt: string | null;
+  finishedAt: string | null;
+}
+
+export function useBroadcastStatus(polling: boolean) {
+  const token = useAdminToken();
+  return useSWR<BroadcastStatus>(
+    token && polling ? "broadcast-status" : null,
+    () => getBroadcastStatus(token!),
+    { refreshInterval: 2000 }
+  );
+}
+
+export function useEmailableUserCount() {
+  const token = useAdminToken();
+  return useSWR<{ count: number }>(
+    token ? "emailable-user-count" : null,
+    () => getEmailableUserCount(token!)
+  );
 }
