@@ -9,6 +9,7 @@ import UserMenu from "@/components/auth/UserMenu";
 import WalletBalance from "@/components/wallet/WalletBalance";
 import GasWarning from "@/components/wallet/GasWarning";
 import { useAuth } from "@/hooks/useAuth";
+import { useHealth } from "@/lib/api/hooks";
 
 const NAV_LINKS = [
   { href: "/", label: "Markets" },
@@ -20,6 +21,25 @@ export default function NavBar() {
   const { isAuthenticated, isReady } = useAuth();
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { data: health, error: healthError } = useHealth();
+
+  const lastTickAgo = health?.lastTickAt
+    ? Math.floor((Date.now() - new Date(health.lastTickAt).getTime()) / 1000)
+    : Infinity;
+
+  const healthColor =
+    healthError || lastTickAgo > 900
+      ? "bg-[var(--no-color)]"
+      : lastTickAgo > 300 || health?.status === "degraded"
+        ? "bg-[var(--accent)]"
+        : "bg-[var(--yes-color)]";
+
+  const healthLabel =
+    healthError || lastTickAgo > 900
+      ? "Offline"
+      : lastTickAgo > 300 || health?.status === "degraded"
+        ? "Degraded"
+        : "Live";
 
   return (
     <>
@@ -73,11 +93,13 @@ export default function NavBar() {
           <div className="flex items-center gap-3">
             <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--foreground)]/5 border border-[var(--foreground)]/10">
               <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--yes-color)] opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-[var(--yes-color)]"></span>
+                {healthLabel === "Live" && (
+                  <span className={`animate-ping absolute inline-flex h-full w-full rounded-full ${healthColor} opacity-75`}></span>
+                )}
+                <span className={`relative inline-flex rounded-full h-2 w-2 ${healthColor}`}></span>
               </span>
               <span className="text-xs font-medium text-muted uppercase tracking-wider">
-                Live
+                {healthLabel}
               </span>
             </div>
             <WalletBalance />
