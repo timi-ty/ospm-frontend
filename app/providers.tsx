@@ -7,6 +7,7 @@ import { useState } from "react";
 import { baseSepolia } from "viem/chains";
 import { http } from "wagmi";
 import { ToastProvider } from "@/components/ui/Toast";
+import AuthVerifier from "@/components/auth/AuthVerifier";
 
 const wagmiConfig = createConfig({
   chains: [baseSepolia],
@@ -39,6 +40,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
     >
       <QueryClientProvider client={queryClient}>
         <WagmiProvider config={wagmiConfig}>
+          <AuthVerifier />
           <ToastProvider>{children}</ToastProvider>
         </WagmiProvider>
       </QueryClientProvider>
