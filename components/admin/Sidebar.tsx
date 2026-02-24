@@ -2,11 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, List, Settings, ArrowLeft, type LucideIcon } from "lucide-react";
+import { LayoutDashboard, List, Settings, Mail, ArrowLeft, type LucideIcon } from "lucide-react";
 
 const NAV_ITEMS: { href: string; label: string; icon: LucideIcon }[] = [
   { href: "/admin", label: "Overview", icon: LayoutDashboard },
   { href: "/admin/markets", label: "Markets", icon: List },
+  { href: "/admin/email", label: "Email", icon: Mail },
   { href: "/admin/system", label: "System", icon: Settings },
 ];
 
