@@ -1,11 +1,10 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { sendBroadcastEmail } from "@/lib/api/admin";
 import { useBroadcastStatus, useEmailableUserCount } from "@/lib/api/adminHooks";
 import { useAdminToken } from "@/lib/api/useAdminToken";
 import { useToast } from "@/components/ui/Toast";
-import DOMPurify from "dompurify";
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -27,11 +26,19 @@ export default function AdminEmailPage() {
   const [showConfirm, setShowConfirm] = useState(false);
   const { data: broadcastStatus } = useBroadcastStatus(polling);
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  const [purify, setPurify] = useState<typeof import("dompurify").default | null>(null);
 
-  const sanitizedHtml = DOMPurify.sanitize(html, {
-    ADD_TAGS: ["style"],
-    ADD_ATTR: ["target"],
-  });
+  useEffect(() => {
+    import("dompurify").then((mod) => setPurify(() => mod.default));
+  }, []);
+
+  const sanitizedHtml = useMemo(() => {
+    if (!purify || !html) return "";
+    return purify.sanitize(html, {
+      ADD_TAGS: ["style"],
+      ADD_ATTR: ["target"],
+    });
+  }, [purify, html]);
 
   useEffect(() => {
     if (iframeRef.current) {
