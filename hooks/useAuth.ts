@@ -1,6 +1,9 @@
 "use client";
 
 import { usePrivy, useWallets } from "@privy-io/react-auth";
+import { useEffect, useRef } from "react";
+
+const ORACLE_URL = process.env.NEXT_PUBLIC_ORACLE_URL || "http://localhost:3001";
 
 function truncateAddress(addr: string) {
   return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
@@ -9,6 +12,25 @@ function truncateAddress(addr: string) {
 export function useAuth() {
   const { login, logout, authenticated, user, ready, getAccessToken } = usePrivy();
   const { wallets } = useWallets();
+  const verifiedRef = useRef(false);
+
+  useEffect(() => {
+    if (!ready || !authenticated || verifiedRef.current) return;
+    verifiedRef.current = true;
+
+    getAccessToken().then((token) => {
+      if (!token) return;
+      fetch(`${ORACLE_URL}/api/auth/verify`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token }),
+      }).catch(() => {});
+    });
+  }, [ready, authenticated, getAccessToken]);
+
+  useEffect(() => {
+    if (!authenticated) verifiedRef.current = false;
+  }, [authenticated]);
 
   const embeddedWallet = wallets.find(
     (wallet) => wallet.walletClientType === "privy"
