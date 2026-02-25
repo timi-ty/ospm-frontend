@@ -1,0 +1,12 @@
+---
+description: Never use hacky server-side workarounds for client-side problems
+alwaysApply: true
+---
+
+# Fix Problems at the Source
+
+When a client sends duplicate requests, fix the client — do not add server-side dedup caches, time-window maps, or other band-aids.
+
+- If a hook is called from N components and produces N side effects, move the side effect into a single-mount component or a dedicated provider — not into a shared mutable variable or a server-side hack.
+- Never use in-memory `Map`/`Set` with TTLs to deduplicate requests that should only be sent once. This is fragile, leaks memory, and masks the real bug.
+- When the root cause is architectural (e.g. side effect in a shared hook), restructure the architecture.
