@@ -1,22 +1,8 @@
 import { ImageResponse } from "next/og";
 import type { NextRequest } from "next/server";
+import { BROWN, CREAM, loadFont } from "./theme";
 
 export const runtime = "edge";
-
-const BROWN = "#7E4430";
-const CREAM = "#DDD3C2";
-const FONT_URL =
-  "https://cdn.jsdelivr.net/fontsource/fonts/montserrat@latest/latin-900-normal.woff";
-
-let cachedFont: ArrayBuffer | null = null;
-
-async function loadFont(): Promise<ArrayBuffer> {
-  if (cachedFont) return cachedFont;
-  const res = await fetch(FONT_URL);
-  if (!res.ok) throw new Error(`Font fetch failed: ${res.status}`);
-  cachedFont = await res.arrayBuffer();
-  return cachedFont;
-}
 
 function clampSize(raw: string | null): number {
   const n = parseInt(raw || "512", 10) || 512;

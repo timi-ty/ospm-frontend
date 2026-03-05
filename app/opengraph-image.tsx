@@ -1,17 +1,13 @@
 import { ImageResponse } from "next/og";
+import { BROWN, CREAM, loadFont } from "./api/logo/theme";
 
 export const runtime = "edge";
 export const alt = "OSPM – Open Source Prediction Markets";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-const BROWN = "#7E4430";
-const CREAM = "#DDD3C2";
-const FONT_URL =
-  "https://cdn.jsdelivr.net/fontsource/fonts/montserrat@latest/latin-900-normal.woff";
-
 export default async function OgImage() {
-  const fontData = await fetch(FONT_URL).then((r) => r.arrayBuffer());
+  const fontData = await loadFont();
 
   const logoSize = 400;
   const fontSize = Math.round(logoSize * 0.36);
