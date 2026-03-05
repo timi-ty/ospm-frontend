@@ -49,12 +49,13 @@ export default function NavBar() {
           <div className="flex items-center gap-6">
             <Link href="/" className="flex items-center gap-3">
               <Image
-                src="/logo.png"
+                src="/api/logo?size=80"
                 alt="OSPM"
                 width={40}
                 height={40}
                 className="rounded-md"
                 priority
+                unoptimized
               />
               <span className="font-bold tracking-tight text-lg hidden sm:block">
                 OSPM

@@ -27,7 +27,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
         appearance: {
           theme: "light",
           accentColor: "#6B5D3E",
-          logo: "/logo.png",
+          logo: "/api/logo?size=128",
         },
         embeddedWallets: {
           ethereum: {

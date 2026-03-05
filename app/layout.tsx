@@ -21,11 +21,11 @@ export const metadata: Metadata = {
   description: "Open Source Prediction Markets - AI-generated markets from real-world news",
   keywords: ["prediction market", "open source", "OSPM", "AI", "news"],
   icons: {
-    icon: "/logo.png",
-    apple: "/logo.png",
+    icon: "/api/logo?size=32",
+    apple: "/api/logo?size=180",
   },
   openGraph: {
-    images: ["/logo.png"],
+    images: ["/opengraph-image"],
   },
 };
 
